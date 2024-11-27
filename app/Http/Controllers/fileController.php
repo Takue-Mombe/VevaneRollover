@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\filetable;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 //use App\Models\filetable;
 
 class fileController extends Controller
 {
 
-
     function upload(Request $request){
+
+        if(!Auth::check()){
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $userName = Auth::user();
 
         $request->validate([
             'file' => 'required|file|mimes:jpeg,jpg,png|max:2048'
@@ -26,7 +30,7 @@ class fileController extends Controller
 
             $file = $request->file('file');
             //adding a timestamp to the filename to prevent it from being overwritten
-            $fileName=time() . '_'. $file->getClientOriginalName();
+            $fileName=time(). '_'. $file->getClientOriginalName();
             //aves the file in the storage/app/public/uploads directory with the given name.
             $filePath=$file->storeAs('uploads',$fileName,'public');
             $fileSize=$file->getSize();
