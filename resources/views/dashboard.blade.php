@@ -14,4 +14,13 @@
             </div>
         </div>
     </div>
+    <div class="upload-form-container">
+        <form action="{{ route('file.upload') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <label for="file">Choose file (Image or PDF):</label>
+            <input type="file" name="file" id="file" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
 </x-app-layout>

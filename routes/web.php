@@ -18,3 +18,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+//routes for uploading files:::
+Route::post('/upload',[\App\Http\Controllers\fileController::class,'upload'])->name('file.upload');

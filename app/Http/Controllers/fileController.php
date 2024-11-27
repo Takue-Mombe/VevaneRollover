@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\File;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Models\filetable;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+//use App\Models\filetable;
 
 class fileController extends Controller
 {
 
-    function validateFile(Request $request){
+
+    function upload(Request $request){
+
         $request->validate([
             'file' => 'required|file|mimes:jpeg,jpg,png|max:2048'
         ]);
@@ -24,20 +29,28 @@ class fileController extends Controller
             $fileName=time() . '_'. $file->getClientOriginalName();
             //aves the file in the storage/app/public/uploads directory with the given name.
             $filePath=$file->storeAs('uploads',$fileName,'public');
+            $fileSize=$file->getSize();
+
+
+
+
 
 
 
             //saves the file's metadata to the files table
-            File::create([
+
+            filetable::create([
                 //original file name
-               'name'=>$file->getClientOriginalName(),
+               'file-name'=>$file->getClientOriginalName(),
                //file extension
-               'type'=>$file->getClientOriginalExtension(),
+               'file-type'=>$file->getClientOriginalExtension(),
                //file path
-               'path'=>$filePath,
+               'file-path'=>$filePath,
+                'file-size'=>$fileSize,
+                'user-id'=>$userName,
             ]);
             //Sends a JSON response back to the client confirming a successful upload.
-            return response()->json(['success'=>'File uploaded successfully.']);
+            return response()->json(['success'=>'File uploaded successfully. Uploaded By: {$userName}'], 200);
         }
         //an error message that is returned when the file fails to upload for some reason
         return response()->json(['error'=>'File not uploaded.']);
